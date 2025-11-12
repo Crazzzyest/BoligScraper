@@ -126,4 +126,4 @@ async function scrapeFinnSearch(url, options = {}) {
   return results;
 }
 
-module.exports = { scrapeFinnSearch };
+module.exports = { scrapeFinnSearch, crawlFinn: scrapeFinnSearch };
