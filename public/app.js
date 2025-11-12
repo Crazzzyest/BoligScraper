@@ -9,15 +9,10 @@ let markers = [];
 let workMarkers = [];
 let googleMapsLoaded = false;
 
-// Detect if running locally or on Vercel
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000'
-  : '';
-
 // Load Google Maps API dynamically
 (async () => {
   try {
-    const configResp = await fetch(`${API_BASE}/api/config`);
+    const configResp = await fetch('/api/config');
     const config = await configResp.json();
     
     if (config.googleMapsApiKey) {
@@ -45,13 +40,12 @@ form.addEventListener('submit', async (e) => {
   const finnUrl = document.getElementById('finnUrl').value;
   const workA = document.getElementById('workA').value;
   const workB = document.getElementById('workB').value;
-  const travelMode = document.getElementById('travelMode').value;
   const maxMinutes = parseInt(document.getElementById('maxMinutes').value || '60');
 
-  const resp = await fetch(`${API_BASE}/api/search`, {
+  const resp = await fetch('/api/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ finnUrl, workA, workB, travelMode, maxMinutes })
+    body: JSON.stringify({ finnUrl, workA, workB, maxMinutes })
   });
 
   if (!resp.ok) {

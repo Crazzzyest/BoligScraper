@@ -1,0 +1,47 @@
+name: Daily Property Search
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC (07:00 CET / 08:00 CEST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run property search
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          FINN_URL: 'https://www.finn.no/realestate/homes/search.html?location=1.20016.20318&published=1&price_to=9000000&price_collective_to=9000000&sort=PRICE_ASC'
+          WORK_A: 'Idrettsbygget Gløshaugen, Chr. Frederiks gate 20, 7030 Trondheim'
+          WORK_B: 'Prinsesse Kristinas gate 3, 7030 Trondheim'
+          MAX_MINUTES: '11'
+          PLAYWRIGHT_HEADLESS: 'true'
+          MAX_LISTINGS: '50'
+        run: node run-search.js
+
+      - name: Upload search results (if exists)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: search-results-${{ github.run_number }}
+          path: data.sqlite
+          retention-days: 7
