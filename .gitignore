@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules
+
+# Environment variables (contains API keys)
+.env
+
+# Database
+data.sqlite
+*.db
+
+# Logs
+npm-debug.log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Playwright
+playwright-report/
+test-results/
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

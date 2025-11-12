@@ -1,0 +1,19 @@
+{
+  "name": "bolig-reisevei-prototype",
+  "version": "0.1.0",
+  "description": "Prototype for reisevei-basert eiendomssøk (FINN + Google Distance Matrix)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "NODE_ENV=development node src/server.js",
+    "install-playwright": "npx playwright install --with-deps"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7",
+    "sqlite3": "^5.1.6",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "playwright": "^1.40.0"
+  }
+}

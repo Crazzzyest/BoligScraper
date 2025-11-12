@@ -1,0 +1,14 @@
+body { font-family: Arial, Helvetica, sans-serif; background:#f4f6f8; margin:0; padding:20px }
+.container { max-width:1200px; margin:0 auto; background:#fff; padding:20px; border-radius:8px }
+form label { display:block; margin-bottom:10px }
+input[type=text], input[type=number], select { width:100%; padding:8px; margin-top:6px }
+button { padding:8px 12px }
+#mapContainer { margin-top:20px; margin-bottom:20px }
+#map { height:500px; width:100%; border-radius:8px; border:1px solid #ddd }
+.listing { border:1px solid #eee; padding:10px; margin-top:10px; border-radius:6px; cursor:pointer; transition:box-shadow 0.2s }
+.listing:hover { box-shadow:0 2px 8px rgba(0,0,0,0.1) }
+.listing.pass { box-shadow:0 0 0 4px rgba(100,180,100,0.06) }
+.listing.fail { opacity:0.7 }
+.listing.highlight { box-shadow:0 0 0 4px rgba(0,100,200,0.2) !important; background:#f0f8ff }
+.meta { color:#666; font-size:0.9rem }
+.times { margin-top:8px }
