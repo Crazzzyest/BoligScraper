@@ -1,64 +1,115 @@
-# Eiendomssøk prototype — reisevei-basert filter
+# BoligScraper - FINN.no Reisevei-søk
 
-Denne prototypen viser en minimal, lokal implementasjon av kravene:
+🏠 Automatisert eiendomssøk basert på reisevei mellom to arbeidssteder.
 
-- Crawler (Playwright) for å hente FINN.no-annonser fra en oppgitt FINN-søk-URL.
-- Google Distance Matrix-integrasjon for å beregne reisetid til to arbeidsadresser.
-- Enkel Express-backend som eksponerer et API og serverer en liten front-end UI.
-- SQLite for enkel caching av resultater.
+## ✨ Funksjoner
 
-Viktig: Dette er en prototype for lokal testing. For produksjon må crawlingen kjøres server-side (Playwright/Puppeteer), og du må følge FINN.no sine retningslinjer/robots.txt og eventuelle API-avtaler.
+- 🔍 Crawler leilighetsannonser fra FINN.no
+- 🗺️ Beregner reisetid til to arbeidsadresser via Google Distance Matrix API
+- 🚗 Støtter 4 transportmetoder: bil, sykkel, gange, kollektivtransport
+- 📍 Interaktivt kart med markører for alle leiligheter
+- ⚡ Filtrerer automatisk basert på maks reisetid
 
-Krav
-- Node 18+ / npm
-- Google API-nøkkel med tilgang til Distance Matrix (og Geocoding hvis du vil geokode adresser).
+## 🚀 Deploy til Vercel (anbefalt for enkel deling)
 
-Rask start
+### 1-klikks deploy
 
-1) Kopier `.env.example` til `.env` og fyll inn `GOOGLE_API_KEY`.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FCrazzzyest%2FBoligScraper&env=GOOGLE_API_KEY&envDescription=Google%20API%20key%20med%20Distance%20Matrix%20og%20Maps%20JavaScript%20API%20aktivert&project-name=boligscraper&repository-name=boligscraper)
 
-2) Installer avhengigheter og Playwright-browsers:
+### Manuell Vercel deploy
 
-```powershell
-npm install
-npx playwright install --with-deps
+1. **Installer Vercel CLI:**
+```bash
+npm i -g vercel
 ```
 
-3) Start serveren:
-
-```powershell
-npm start
+2. **Deploy:**
+```bash
+vercel
 ```
 
-4) Åpne http://localhost:3000 og test med en FINN search-results URL eller en kort prøve-URL.
+3. **Legg til environment variables i Vercel dashboard:**
+   - Gå til prosjektets Settings → Environment Variables
+   - Legg til: `GOOGLE_API_KEY` = din Google API-nøkkel
 
-Bruk
-- I UI: lim inn `finnUrl` (søkeresultatside på FINN), `workA` og `workB` (adresser eller koordinater), velg maks antall minutter og trykk Søk.
+4. **Aktiver nødvendige Google APIs:**
+   - [Distance Matrix API](https://console.cloud.google.com/apis/library/distancematrix-backend.googleapis.com)
+   - [Maps JavaScript API](https://console.cloud.google.com/apis/library/maps-backend.googleapis.com)
 
-Arkitektur og neste steg for produksjon
-- Kjøre crawler i et jobbsystem (cron / queue) med robust rate-limiting.
-- Bruk offisiell FINN API hvis tilgjengelig, ellers nøye overhold robots.txt.
-- Backend-proxy for Google API-kall for å beskytte API-nøkkel.
-- Bedre geokoding, robustere selectors for FINN, og mer komplett datamodell (bilder, areal, rom, m.m.).
+## 🐳 Lokal kjøring med Docker
 
-Docker (anbefalt hvis du ikke vil oppgradere Node lokalt)
----------------------------------------------------
-Dette repoet inkluderer en Dockerfile og `docker-compose.yml` som bruker Playwrights offisielle image (inneholder nettleser-binarier).
+```bash
+# Klon repo
+git clone https://github.com/Crazzzyest/BoligScraper.git
+cd BoligScraper
 
-Bygg og kjør med Docker (PowerShell):
+# Opprett .env fil
+cp .env.example .env
+# Rediger .env og legg inn GOOGLE_API_KEY
 
-```powershell
-docker build -t bolig-reisevei-prototype:latest .
-docker run --rm -p 3000:3000 --env-file .env -v ${PWD}:/app bolig-reisevei-prototype:latest
-```
-
-Eller med docker-compose:
-
-```powershell
+# Start med Docker
 docker-compose up --build
 ```
 
-Volumer: `data.sqlite` mappes ut i repo-roten for enkel vedvarende caching.
+Åpne http://localhost:3000
 
-Merk: dersom du kjører i WSL/Windows, pass på at filrettigheter og paths fungerer som forventet.
+## 💻 Lokal utvikling uten Docker
+
+```bash
+npm install
+npm run install-playwright  # Installerer Chromium for Playwright
+npm start
+```
+
+## 📝 Bruk
+
+1. Lim inn en FINN.no søke-URL (f.eks. `https://www.finn.no/realestate/homes/search.html?location=1.20016.20318`)
+2. Skriv inn adressene til to arbeidssteder
+3. Velg transportmetode
+4. Sett maks reisetid (minutter)
+5. Klikk "Søk"
+
+Resultater vises både som liste og på interaktivt kart.
+
+## ⚙️ Konfigurasjon
+
+Environment variables (`.env` eller Vercel Settings):
+
+- `GOOGLE_API_KEY` - **Påkrevd**. Google API-nøkkel med Distance Matrix og Maps aktivert
+- `MAX_LISTINGS` - Maks antall annonser å sjekke (standard: 10 for Vercel, 20 for Docker)
+- `PORT` - Port for lokal server (standard: 3000)
+
+## 🧪 Testing
+
+Test med eksempel-søk:
+- **FINN URL:** `https://www.finn.no/realestate/homes/search.html?location=1.20016.20318`
+- **Arbeid A:** `Prinsesse Kristinas gate 3, 7030 Trondheim`
+- **Arbeid B:** `Idrettsbygget Gløshaugen, Chr. Frederiks gate 20, 7030 Trondheim`
+- **Maks tid:** 45 minutter
+
+## 📦 Teknologi
+
+- **Frontend:** Vanilla JS + Google Maps JavaScript API
+- **Backend:** Node.js serverless functions (Vercel)
+- **Crawler:** Playwright (headless Chromium)
+- **API:** Google Distance Matrix API
+
+## ⚠️ Viktig informasjon
+
+- **FINN.no API:** Krever avtale med FINN. Denne løsningen bruker web scraping via Playwright
+- **Vercel timeout:** Free tier = 10s per function. For mange annonser kan du trenge Pro ($20/mnd) med 60s timeout
+- **Google API kostnader:** Distance Matrix API har gratis tier ($200 credit/mnd). Sjekk [pricing](https://developers.google.com/maps/documentation/distance-matrix/usage-and-billing)
+
+## 🤝 Bidrag
+
+Pull requests er velkomne! For større endringer, åpne først en issue.
+
+## 📄 Lisens
+
+[MIT](LICENSE)
+
+---
+
+**Utviklet med ❤️ for enklere boligjakt**
+
 
