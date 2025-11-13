@@ -1,0 +1,8 @@
+node_modules
+data.sqlite
+npm-debug.log
+.env
+.git
+playwright-report
+Dockerfile
+docker-compose.yml

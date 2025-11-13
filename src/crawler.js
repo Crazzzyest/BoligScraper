@@ -8,21 +8,31 @@ async function scrapeFinnSearch(url, options = {}) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-
-  // Collect listing links - only actual property ads (ad.html links)
-  const anchors = await page.$$eval('a', as => as.map(a => ({ href: a.href, text: a.innerText })));
   const listingLinks = [];
-  for (const a of anchors) {
-    if (!a.href) continue;
-    // Only match actual property listings (ad.html), skip search pages and other links
-    if (a.href.includes('/realestate/homes/ad.html?finnkode=')) {
-      if (!listingLinks.includes(a.href)) listingLinks.push(a.href);
+
+  // Scrape page 1 and page 2
+  for (let pageNum = 1; pageNum <= 2; pageNum++) {
+    const pageUrl = pageNum === 1 ? url : `${url}${url.includes('?') ? '&' : '?'}page=${pageNum}`;
+    
+    console.log(`Crawling page ${pageNum}: ${pageUrl}`);
+    await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+    // Collect listing links - only actual property ads (ad.html links)
+    const anchors = await page.$$eval('a', as => as.map(a => ({ href: a.href, text: a.innerText })));
+    
+    for (const a of anchors) {
+      if (!a.href) continue;
+      // Only match actual property listings (ad.html), skip search pages and other links
+      if (a.href.includes('/realestate/homes/ad.html?finnkode=')) {
+        if (!listingLinks.includes(a.href)) listingLinks.push(a.href);
+      }
     }
-    if (listingLinks.length >= max) break;
   }
 
+  console.log(`Found ${listingLinks.length} unique listings across 2 pages`);
+
   const results = [];
+  // Process up to max listings
   for (let link of listingLinks.slice(0, max)) {
     try {
       await page.goto(link, { waitUntil: 'domcontentloaded', timeout: 30000 });

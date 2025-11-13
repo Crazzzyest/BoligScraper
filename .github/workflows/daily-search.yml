@@ -35,7 +35,7 @@ jobs:
           WORK_B: 'Kjeller Vest 8, 2007 Kjeller, Norway'
           MAX_MINUTES: '50'
           PLAYWRIGHT_HEADLESS: 'true'
-          MAX_LISTINGS: '50'
+          MAX_LISTINGS: '100'
         run: node run-search.js
 
       - name: Upload search results (if exists)
