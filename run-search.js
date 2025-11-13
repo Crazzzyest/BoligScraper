@@ -12,10 +12,10 @@ async function runSearch() {
   
   // Search parameters
   const params = {
-    finnUrl: process.env.FINN_URL || 'https://www.finn.no/realestate/homes/search.html?location=1.20016.20318&published=1&price_to=9000000&price_collective_to=9000000&sort=PRICE_ASC',
-    workA: process.env.WORK_A || 'Idrettsbygget Gløshaugen, Chr. Frederiks gate 20, 7030 Trondheim',
-    workB: process.env.WORK_B || 'Prinsesse Kristinas gate 3, 7030 Trondheim',
-    maxMinutes: parseInt(process.env.MAX_MINUTES || '11', 10)
+    finnUrl: process.env.FINN_URL || 'https://www.finn.no/realestate/homes/search.html?filters=&location=0.20003&location=0.20061&min_bedrooms=3&property_type=1&q=landlig',
+    workA: process.env.WORK_A || 'Kirkeveien 166, 0450 Oslo, Norway',
+    workB: process.env.WORK_B || 'Kjeller Vest 8, 2007 Kjeller, Norway',
+    maxMinutes: parseInt(process.env.MAX_MINUTES || '50', 50)
   };
 
   console.log('Search parameters:', params);
