@@ -15,7 +15,7 @@ async function runSearch() {
     finnUrl: process.env.FINN_URL || 'https://www.finn.no/realestate/homes/search.html?filters=&location=0.20003&location=0.20061&min_bedrooms=3&property_type=1&q=landlig',
     workA: process.env.WORK_A || 'Kirkeveien 166, 0450 Oslo, Norway',
     workB: process.env.WORK_B || 'Kjeller Vest 8, 2007 Kjeller, Norway',
-    maxMinutes: parseInt(process.env.MAX_MINUTES || '50', 50)
+    maxMinutes: parseInt(process.env.MAX_MINUTES || '50', 10)
   };
 
   console.log('Search parameters:', params);
