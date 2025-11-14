@@ -16,7 +16,7 @@ async function runSearch() {
     workA: process.env.WORK_A || 'Kirkeveien 166, 0450 Oslo, Norway',
     workB: process.env.WORK_B || 'Kjeller Vest 8, 2007 Kjeller, Norway',
     maxMinutes: parseInt(process.env.MAX_MINUTES || '50', 10),
-    maxListings: parseInt(process.env.MAX_LISTINGS || '100', 10)
+    maxListings: parseInt(process.env.MAX_LISTINGS || '200', 10)
   };
 
   console.log('Search parameters:', params);

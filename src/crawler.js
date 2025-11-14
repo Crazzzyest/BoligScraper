@@ -10,26 +10,40 @@ async function scrapeFinnSearch(url, options = {}) {
 
   const listingLinks = [];
 
-  // Scrape page 1 and page 2
-  for (let pageNum = 1; pageNum <= 2; pageNum++) {
+  // Scrape multiple pages (up to 3 pages to cover ~150 listings)
+  for (let pageNum = 1; pageNum <= 3; pageNum++) {
     const pageUrl = pageNum === 1 ? url : `${url}${url.includes('?') ? '&' : '?'}page=${pageNum}`;
     
     console.log(`Crawling page ${pageNum}: ${pageUrl}`);
     await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-    // Collect listing links - only actual property ads (ad.html links)
+    // Collect listing links - all property-related links
     const anchors = await page.$$eval('a', as => as.map(a => ({ href: a.href, text: a.innerText })));
     
+    const beforeCount = listingLinks.length;
     for (const a of anchors) {
       if (!a.href) continue;
-      // Only match actual property listings (ad.html), skip search pages and other links
-      if (a.href.includes('/realestate/homes/ad.html?finnkode=')) {
+      // Match all types of property listings:
+      // - Regular ads: /realestate/homes/ad.html?finnkode=
+      // - New builds/projects: /realestate/newbuildings/
+      // - Other property URLs under /realestate/homes/
+      if (
+        a.href.includes('/realestate/homes/ad.html?finnkode=') ||
+        a.href.includes('/realestate/newbuildings/') ||
+        (a.href.includes('/realestate/homes/') && a.href.includes('finnkode='))
+      ) {
         if (!listingLinks.includes(a.href)) listingLinks.push(a.href);
       }
     }
+    
+    // Stop if no new listings found on this page
+    if (listingLinks.length === beforeCount) {
+      console.log(`No new listings on page ${pageNum}, stopping crawl`);
+      break;
+    }
   }
 
-  console.log(`Found ${listingLinks.length} unique listings across 2 pages`);
+  console.log(`Found ${listingLinks.length} unique listings across pages`);
 
   const results = [];
   // Process up to max listings
