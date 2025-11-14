@@ -12,7 +12,7 @@ async function runSearch() {
   
   // Search parameters
   const params = {
-    finnUrl: process.env.FINN_URL || 'https://www.finn.no/realestate/homes/search.html?filters=&location=0.20003&location=0.20061&min_bedrooms=3&property_type=1&q=landlig&price_to=15000000&price_from=3000000',
+    finnUrl: process.env.FINN_URL || 'https://www.finn.no/realestate/homes/search.html?filters=&location=0.20003&location=0.20061&min_bedrooms=3&property_type=1&q=landlig&price_to=9500000&price_from=5000000&published=1',
     workA: process.env.WORK_A || 'Kirkeveien 166, 0450 Oslo, Norway',
     workB: process.env.WORK_B || 'Kjeller Vest 8, 2007 Kjeller, Norway',
     maxMinutes: parseInt(process.env.MAX_MINUTES || '50', 10),
