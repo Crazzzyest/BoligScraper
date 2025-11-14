@@ -36,8 +36,11 @@ async function scrapeFinnSearch(url, options = {}) {
       }
     }
     
+    const newListings = listingLinks.length - beforeCount;
+    console.log(`Found ${newListings} new listings on page ${pageNum} (total: ${listingLinks.length})`);
+    
     // Stop if no new listings found on this page
-    if (listingLinks.length === beforeCount) {
+    if (newListings === 0) {
       console.log(`No new listings on page ${pageNum}, stopping crawl`);
       break;
     }
